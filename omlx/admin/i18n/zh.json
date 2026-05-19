@@ -277,6 +277,7 @@
   "settings.server.restart_button_restarting": "Restarting…",
   "settings.server.restart_button_waiting": "Waiting for server…",
   "settings.server.restart_confirm": "Restart the oMLX server?\n\nAll loaded models will be unloaded. Expected downtime ~7s.",
+  "settings.server.restart_unsaved_warning": "You have unsaved changes. Please save your settings before restarting the server to ensure they are applied.",
   "settings.server.restart_status_sending": "Sending restart signal…",
   "settings.server.restart_status_waiting": "Waiting for server to come back…",
   "settings.server.restart_status_back": "Server is back. Reloading…",

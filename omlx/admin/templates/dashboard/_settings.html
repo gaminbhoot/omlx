@@ -267,10 +267,11 @@
                                              state-driven; the reserved min-height prevents layout shift
                                              when restartServer.message goes from "" to text. -->
                                         <p class="text-xs mt-1 min-h-[1rem]"
-                                           :class="restartServer.status === 'error' ? 'text-red-500'
+                                           :class="settingsDirty ? 'text-amber-600' 
+                                                 : restartServer.status === 'error' ? 'text-red-500'
                                                  : restartServer.status === 'unsupported' ? 'text-amber-600'
                                                  : 'text-neutral-500'"
-                                           x-text="restartServer.message"></p>
+                                           x-text="settingsDirty ? '{{ t('settings.server.restart_unsaved_warning') }}' : restartServer.message"></p>
                                     </div>
                                     <button type="button"
                                             @click="restartServerStart()"

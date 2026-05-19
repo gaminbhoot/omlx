@@ -81,6 +81,43 @@
             </div>
         </div>
     </div>
+
+    <!-- Restart Unsaved Changes Modal -->
+    <div x-show="showRestartUnsavedModal" x-cloak
+         class="fixed inset-0 z-50 overflow-y-auto"
+         @keydown.escape.window="showRestartUnsavedModal = false">
+        <div class="fixed inset-0 bg-black/50" @click="showRestartUnsavedModal = false"></div>
+        <div class="flex min-h-full items-center justify-center p-4">
+            <div class="relative bg-white rounded-2xl shadow-2xl max-w-md w-[28rem] overflow-hidden"
+                 @click.stop>
+                <div class="flex items-center justify-between px-6 py-4 border-b border-neutral-200">
+                    <div class="flex items-center gap-2 text-amber-600">
+                        <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                        <h3 class="text-base font-semibold text-neutral-900">{{ t('settings.server.restart_label') }}</h3>
+                    </div>
+                    <button @click="showRestartUnsavedModal = false"
+                            class="p-1 rounded-lg text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 transition-all">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <div class="px-6 py-8">
+                    <p class="text-sm text-neutral-600 text-center leading-relaxed">
+                        {{ t('settings.server.restart_unsaved_warning') }}
+                    </p>
+                </div>
+                <div class="flex items-center justify-end gap-3 px-6 py-4 border-t border-neutral-100 bg-neutral-50">
+                    <button @click="showRestartUnsavedModal = false"
+                            class="px-4 py-2 text-sm text-neutral-600 hover:text-neutral-900 transition-colors">
+                        {{ t('models.downloader.mirror_cancel') }}
+                    </button>
+                    <button @click="saveGlobalSettings().then(() => { if (!saveError) { showRestartUnsavedModal = false; restartServerStart(); } })"
+                            class="px-4 py-2 text-sm font-medium text-white bg-neutral-900 rounded-lg hover:bg-neutral-800 transition-all">
+                        {{ t('settings.save.button') }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}
 

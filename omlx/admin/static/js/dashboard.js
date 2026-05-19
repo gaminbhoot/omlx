@@ -85,6 +85,8 @@
 
             // Saving state
             saving: false,
+            settingsDirty: false,
+            loadingSettings: false,
             saveSuccess: false,
             saveMessage: '',
             saveError: '',
@@ -213,6 +215,7 @@
 
             // HF Mirror settings modal
             showHfMirrorModal: false,
+            showRestartUnsavedModal: false,
             hfMirrorEndpoint: '',
             hfMirrorSaving: false,
 
@@ -449,6 +452,13 @@
                     this.handleMainTabChange(value);
                 });
 
+                // Watch for settings changes to mark as dirty
+                this.$watch('globalSettings', () => {
+                    if (!this.loadingSettings) {
+                        this.settingsDirty = true;
+                    }
+                }, { deep: true });
+
                 this.$watch('hfMlxOnly', () => {
                     this.hfRecommended = { trending: [], popular: [] };
                     this.hfRecommendedLoaded = false;
@@ -623,6 +633,7 @@
             },
 
             async loadGlobalSettings() {
+                this.loadingSettings = true;
                 try {
                     const response = await fetch('/admin/api/global-settings');
                     if (response.ok) {
@@ -696,11 +707,14 @@
                             this.globalSettings.cache.hot_cache_max_size,
                             this.globalSettings.system.total_memory_bytes
                         );
+                        this.settingsDirty = false;
                     } else if (response.status === 401) {
                         window.location.href = '/admin';
                     }
                 } catch (err) {
                     console.error('Failed to load global settings:', err);
+                } finally {
+                    this.loadingSettings = false;
                 }
             },
 
@@ -781,6 +795,7 @@
                     if (response.ok) {
                         const data = await response.json();
                         this.saveSuccess = true;
+                        this.settingsDirty = false;
                         this.saveMessage = data.message || 'Settings saved successfully';
                         // Refresh stats and model list (cache changes unload models)
                         await this.loadStats();
@@ -1859,6 +1874,12 @@
                     || this.restartServer.status === 'waiting') {
                     return;
                 }
+
+                if (this.settingsDirty) {
+                    this.showRestartUnsavedModal = true;
+                    return;
+                }
+
                 if (!window.confirm(window.t('settings.server.restart_confirm'))) {
                     return;
                 }
